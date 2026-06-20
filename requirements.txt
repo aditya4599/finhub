@@ -1,0 +1,33 @@
+# Runtime + optional extras in one file (same pins as pyproject.toml).
+# Preferred: pip install -e ".[plots,env,dev]"
+
+# Core (transformers 5.x cannot load yiyanghkust/finbert-tone via AutoModel; keep the 4.x stack)
+torch>=2.0.0
+transformers>=4.35.0,<5
+sentence-transformers>=2.2.2,<6
+datasets>=2.14.0,<5
+
+# Vector search (use faiss-gpu instead on CUDA machines if desired)
+faiss-cpu>=1.7.4
+
+# Data / statistics
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# Utilities
+tqdm>=4.66.0
+python-dateutil>=2.8.0
+pyyaml>=6.0.0
+requests>=2.31.0
+tensorboard>=2.14.0
+python-dotenv>=1.0.0
+
+# Plots
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Tests
+pytest>=7.4.0
+pytest-cov>=4.1.0

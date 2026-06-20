@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+
+# Testing and linting
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Environments and secrets
+venv/
+.venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Data, models and generated artifacts
+data_cache/
+saved_models/
+indices/
+logs/
+runs/
+
+# Ignore generated results by default
+results/*
+!results/inherited/
+!results/inherited/**
+
+# Exclude generated figures
+results/figures/
+
+# Large binaries
+*.faiss
+*.meta
+*.pkl
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.parquet
+*.npy
+*.npz
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp
