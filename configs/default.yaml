@@ -1,0 +1,60 @@
+# FinSearch default configuration.
+#
+# These values mirror the dataclass defaults in finsearch/config/settings.py
+# (tests/test_config_and_analysis.py checks that they stay in sync).
+# To customise: copy this file, edit only the keys you need, and pass it with
+#   python scripts/<script>.py --config configs/my_config.yaml
+# Keys you omit keep their defaults; unknown keys raise an error.
+#
+# Precedence: command-line flags > YAML file > dataclass defaults.
+# NOTE: the training scripts always set training.epochs, batch_size,
+# learning_rate and margin from their own flags (defaults: --epochs 3,
+# --lr 2e-5, --margin 0.5, --batch_size 32 for SBERT / 16 for FinBERT), so the
+# YAML values for those four keys only affect code that uses the config directly.
+
+# Labelled training / evaluation data (Hugging Face Hub dataset id).
+dataset_name: zeroshot/twitter-financial-news-topic
+# Unlabelled news corpus used only for building a search index (--use_hf).
+news_corpus_dataset: Brianferrell787/financial-news-multisource
+
+paths:
+  # Relative paths are resolved against the repository root
+  # (override the root with the FINSEARCH_HOME environment variable).
+  data_dir: data_cache        # Hugging Face datasets cache, sample files
+  models_dir: saved_models    # checkpoints: <models_dir>/<sbert|finbert>/seed_<n>/best_model
+  logs_dir: logs              # TensorBoard logs
+  index_dir: indices          # saved FAISS indexes
+  results_dir: results        # evaluation JSON and figures
+  headlines_path: null        # optional local headlines file for NewsHeadlinesLoader
+
+model:
+  sbert_model_name: sentence-transformers/all-MiniLM-L6-v2
+  finbert_model_name: yiyanghkust/finbert-tone
+  sbert_dim: 384              # informational; the real size is read from the model on load
+  finbert_dim: 768
+  max_seq_length: 128         # tokens; longer texts are truncated
+
+training:
+  margin: 0.5                 # triplet margin (cosine distance)
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.1           # fraction of steps with linear LR warm-up
+  epochs: 5
+  batch_size: 32
+  eval_batch_size: 64         # validation batch size (SBERT script)
+  random_seeds: [42, 123, 456, 789, 1024]   # used by multi_seed_training()
+  patience: 3                 # early-stopping epochs without improvement
+  min_delta: 0.001            # minimum val-loss decrease counted as improvement
+  gradient_accumulation_steps: 1
+  # device: cuda              # default: "cuda" if available, else "cpu"
+
+evaluation:
+  k_values: [5, 10, 20]       # cut-offs for P@k, nDCG@k, R@k
+  confidence_level: 0.95      # t-interval coverage across seeds
+  num_eval_queries: 500       # used when no --num_queries is passed to the evaluator
+
+search:
+  index_type: ivf             # default index type for code using the config; build_index.py uses --index_type
+  nlist: 1000                 # IVF clusters; needs >= nlist vectors (use flat for small collections)
+  nprobe: 50                  # IVF clusters probed per query
+  top_k: 10
